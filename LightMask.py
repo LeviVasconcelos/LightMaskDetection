@@ -7,10 +7,6 @@ import time
 import argparse
 import numpy as np
 from PIL import Image
-from utils.anchor_generator import generate_anchors
-from utils.anchor_decode import decode_bbox
-from utils.nms import single_class_non_max_suppression
-from load_model.pytorch_loader import load_pytorch_model, pytorch_inference
 # Ros libraries
 import roslib
 import rospy
