@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!--
+core.launch
+Author: Levi O. Vasconcelos
+Note: Do not run this file directly. Please call run_<file>.launch file instead.
+Date: 2020/09/26
+-->
+<launch>
+  <arg name="image_topic" default=""/>
+  <arg name="detector_topic" default=""/>
+  <arg name="tracker_input_topic" default=""/>
+  <arg name="image_out_topic" default=""/>
+  <arg name="tracker_out_topic" default=""/>
+  <arg name="add_entity_topic" default=""/>
+  <!-- invoke LightMask node -->
+  <node name="light_tracker" pkg="light_tracker" type="LightMask.py">
+    <param name="image_topic" value="$(arg image_topic)" />
+    <param name="detector_topic" value="$(arg detector_topic)" />
+    <param name="tracker_input_topic" value="$(arg tracker_input_topic)" />
+    <param name="image_out_topic" value="$(arg image_out_topic)" />
+    <param name="tracker_out_topic" value="$(arg tracker_out_topic)" />
+    <param name="add_entity_topic" value="$(arg add_entity_topic)" />
+  </node>
+</launch>
