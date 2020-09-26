@@ -1,16 +1,18 @@
 <?xml version="1.0"?>
 <!--
 run.launch: this file does no more than calling other launch file
-Author: Ravi Joshi
-Date: 2019/11/23
+Author: Levi O. Vasconcelos
+Date: 2020/09/26
 -->
 <launch>
- <include file="$(find light_tracker)/launch/core.launch">
-	 <arg name="image_topic" default=""/>
-   <arg name="detector_topic" default=""/>
-   <arg name="tracker_input_topic" default=""/>
-   <arg name="image_out_topic" default=""/>
-   <arg name="tracker_out_topic" default=""/>
-   <arg name="add_entity_topic" default=""/>
-  </include>
+  <include file="$(find light_tracker)/launch/core.launch">
+      <arg name="detector_input_topic" value="/publishers/mask_detector"/>
+      <arg name="tracker_input_topic" value="/publishers/tracker_image"/>
+      <arg name="image_out_topic" value="/publishers/light_mask"/>
+      <arg name="add_entity_topic" value="/publishers/add_entities"/>
+    
+      <arg name="tracker_out_topic" value="/subscribers/tracker"/>
+      <arg name="detector_out_topic" value="/subscribers/mask_detector"/>
+      <arg name="camera_image_topic" value="/subscribers/image_input"/>
+   </include>
 </launch>

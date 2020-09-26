@@ -22,14 +22,26 @@ from entity_tracker.msg import AddEntityRequestMsg, EntitiesFrameMsg, TrackEntit
 class LightMaskDetector:
     def __init__(self):
         kQueueSize = 15
-        self.image_sub = rospy.Subscriber("/subscribers/image_input", CompressedImage, self._callback_image, queue_size=kQueueSize)
-        self.mask_sub = rospy.Subscriber("/subscribers/mask_input", MaskFrame, self._callback_mask, queue_size=kQueueSize)
-        self.track_sub = rospy.Subscriber("/subscribers/tracker_input", EntitiesFrameMsg, self._callback_tracker, queue_size=kQueueSize) 
+        topics = {}
+        try:
+            topics['image_sub'] = rospy.get_param("camera_image_topic")
+            topics['mask_sub'] = rospy.get_param("detector_out_topic")
+            topics['track_sub'] = rospy.get_param("tracker_out_topic")
+            topics['add_entry_pub'] = rospy.get_param("add_entity_topic")
+            topics['detect_pub'] = rospy.get_param("detector_input_topic")
+            topics['track_pub'] = rospy.get_param("tracker_input_topic")
+            topics['out_pub'] = rospy.get_param("image_out_topic")
+        except ROSException:
+            print("could not get param name")
 
-        self.add_entry_pub = rospy.Publisher("/publishers/add_entities", AddEntityRequestMsg, queue_size=kQueueSize)
-        self.detect_pub = rospy.Publisher("/publishers/detect_entities", CompressedImage, queue_size=kQueueSize))
-        self.track_pub = rospy.Publisher("/publishers/track_image", CompressedImage, queue_size=kQueueSize))
-        self.out_pub = rospy.Publisher("/publishers/light_mask", CompressedImage, queue_size=kQueueSize))
+        self.image_sub = rospy.Subscriber(topics['image_sub'], CompressedImage, self._callback_image, queue_size=kQueueSize)
+        self.mask_sub = rospy.Subscriber(topics['mask_sub'], MaskFrame, self._callback_mask, queue_size=kQueueSize)
+        self.track_sub = rospy.Subscriber(topics['track_sub'], EntitiesFrameMsg, self._callback_tracker, queue_size=kQueueSize) 
+
+        self.add_entry_pub = rospy.Publisher(topics['add_entry_pub'], AddEntityRequestMsg, queue_size=kQueueSize)
+        self.detect_pub = rospy.Publisher(topics['detect_pub'], CompressedImage, queue_size=kQueueSize))
+        self.track_pub = rospy.Publisher(topics['track_pub'], CompressedImage, queue_size=kQueueSize))
+        self.out_pub = rospy.Publisher(topics['out_pub'], CompressedImage, queue_size=kQueueSize))
 
         self.shouldInitialize = True 
         self.key_frame_msg = None
@@ -68,8 +80,8 @@ class LightMaskDetector:
  
         
 if __name__ == "__main__":
-    detector = LightMaskDetector()
     rospy.init_node('light_mask_detector', anonymous=True)
+    detector = LightMaskDetector()
     try:
         rospy.spin()
     except KeyboardInterrupt:
