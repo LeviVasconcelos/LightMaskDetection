@@ -24,14 +24,15 @@ class LightMaskDetector:
         kQueueSize = 15
         topics = {}
         try:
-            topics['image_sub'] = rospy.get_param("camera_image_topic")
-            topics['mask_sub'] = rospy.get_param("detector_out_topic")
-            topics['track_sub'] = rospy.get_param("tracker_out_topic")
-            topics['add_entry_pub'] = rospy.get_param("add_entity_topic")
-            topics['detect_pub'] = rospy.get_param("detector_input_topic")
-            topics['track_pub'] = rospy.get_param("tracker_input_topic")
-            topics['out_pub'] = rospy.get_param("image_out_topic")
-        except ROSException:
+            node_name = rospy.get_name()
+            topics['image_sub'] = rospy.get_param(rospy.search_param("camera_image_topic"))
+            topics['mask_sub'] = rospy.get_param(rospy.search_param("detector_out_topic"))
+            topics['track_sub'] = rospy.get_param(rospy.search_param("tracker_out_topic"))
+            topics['add_entry_pub'] = rospy.get_param(rospy.search_param("add_entity_topic"))
+            topics['detect_pub'] = rospy.get_param(rospy.search_param("detector_input_topic"))
+            topics['track_pub'] = rospy.get_param(rospy.search_param("tracker_input_topic"))
+            topics['out_pub'] = rospy.get_param(rospy.search_param("image_out_topic"))
+        except rospy.ROSException:
             print("could not get param name")
 
         self.image_sub = rospy.Subscriber(topics['image_sub'], CompressedImage, self._callback_image, queue_size=kQueueSize)
@@ -39,9 +40,9 @@ class LightMaskDetector:
         self.track_sub = rospy.Subscriber(topics['track_sub'], EntitiesFrameMsg, self._callback_tracker, queue_size=kQueueSize) 
 
         self.add_entry_pub = rospy.Publisher(topics['add_entry_pub'], AddEntityRequestMsg, queue_size=kQueueSize)
-        self.detect_pub = rospy.Publisher(topics['detect_pub'], CompressedImage, queue_size=kQueueSize))
-        self.track_pub = rospy.Publisher(topics['track_pub'], CompressedImage, queue_size=kQueueSize))
-        self.out_pub = rospy.Publisher(topics['out_pub'], CompressedImage, queue_size=kQueueSize))
+        self.detect_pub = rospy.Publisher(topics['detect_pub'], CompressedImage, queue_size=kQueueSize)
+        self.track_pub = rospy.Publisher(topics['track_pub'], CompressedImage, queue_size=kQueueSize)
+        self.out_pub = rospy.Publisher(topics['out_pub'], CompressedImage, queue_size=kQueueSize)
 
         self.shouldInitialize = True 
         self.key_frame_msg = None
