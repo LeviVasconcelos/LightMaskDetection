@@ -6,7 +6,7 @@ Date: 2020/09/26
 -->
 <launch>
   <include file="$(find light_tracker)/launch/core.launch">
-      <arg name="detector_input_topic" value="/face_mask/output/faces"/>
+	  <arg name="detector_input_topic" value="/face_mask/input/image"/>
       <arg name="tracker_input_topic" value="/tracker/image_input"/>
       <arg name="image_out_topic" value="/face_tracker/output/light_mask"/>
       <arg name="add_entity_topic" value="/tracker/input/add"/>
