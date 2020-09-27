@@ -6,13 +6,12 @@ Date: 2020/09/26
 -->
 <launch>
   <include file="$(find light_tracker)/launch/core.launch">
-      <arg name="detector_input_topic" value="/publishers/mask_detector"/>
-      <arg name="tracker_input_topic" value="/publishers/tracker_image"/>
-      <arg name="image_out_topic" value="/publishers/light_mask"/>
-      <arg name="add_entity_topic" value="/publishers/add_entities"/>
-    
-      <arg name="tracker_out_topic" value="/subscribers/tracker"/>
-      <arg name="detector_out_topic" value="/subscribers/mask_detector"/>
-      <arg name="camera_image_topic" value="/subscribers/image_input"/>
+      <arg name="detector_input_topic" value="/face_mask/output/faces"/>
+      <arg name="tracker_input_topic" value="/tracker/image_input"/>
+      <arg name="image_out_topic" value="/face_tracker/output/light_mask"/>
+      <arg name="add_entity_topic" value="/tracker/input/add"/>
+      <arg name="tracker_out_topic" value="/tracker/output/entities"/>
+      <arg name="detector_out_topic" value="/face_mask/output/faces"/>
+      <arg name="camera_image_topic" value="/head_front_camera/image_raw/compressed"/>
    </include>
 </launch>
