@@ -15,7 +15,7 @@ Date: 2020/09/26
   <arg name="detector_out_topic" default="/subscribers/mask_detector"/>
   <arg name="camera_image_topic" default="/subscribers/image_input"/>
   <!-- invoke LightMask node -->
-  <node name="light_tracker" pkg="light_tracker" type="LightMask.py">
+  <node name="light_tracker" pkg="light_tracker" type="LightMask.py" output="screen">
 
     <param name="detector_input_topic" value="$(arg detector_input_topic)" />
     <param name="tracker_input_topic" value="$(arg tracker_input_topic)" />
