@@ -45,32 +45,38 @@ class LightMaskDetector:
         self.out_pub = rospy.Publisher(topics['out_pub'], CompressedImage, queue_size=kQueueSize)
 
         self.shouldInitialize = True 
+        self.isInitialized = False
         self.key_frame_msg = None
         self.counter = 1
 
     def _callback_image(self, ros_data):
         if self.shouldInitialize:
+            rospy.loginfo("Initializing Tracker!")
             self.key_frame_msg = ros_data
             self.detect_pub.publish(ros_data)
-        else:
+            self.shouldInitialize = False
+        elif self.isInitialized:
+            rospy.loginfo("Updating track bboxes")
             self.track_pub.publish(ros_data)
 
     def _callback_mask(self, ros_data):
-        if self.shouldInitialize:
-            for bbox in ros_data.bboxes:
-                request_msg = AddEntityRequestMsg()
-                request_msg.img = self.key_frame_msg 
-                request_msg.label = "Person " + str(self.counter)
-                self.counter += 1
-                request_msg.roi = bbox.bbox
-                self.add_entry_pub.publish("request_msg")
-            self.shouldInitialize = False
+        rospy.loginfo("Received Detected Masks...")
+        for bbox in ros_data.bboxes:
+            request_msg = AddEntityRequestMsg()
+            request_msg.img = self.key_frame_msg 
+            request_msg.label = "Person " + str(self.counter)
+            self.counter += 1
+            request_msg.roi = bbox.bbox
+            self.add_entry_pub.publish("request_msg")
+        self.shouldInitialize = False
+        self.isInitialized = True
 
     def _callback_tracker(self, ros_data):
+        rospy.loginfo('received tracked data!')
         color = (125,125,0)
-        np_arr = np.fromstring(ros_data.data, np.uint8)
+        np_arr = np.fromstring(ros_data.img.data, np.uint8)
         image = cv2.imdecode(np_arr, cv2.IMREAD_COLOR) # OpenCV >= 3.0:
-        for entity in data.entities:
+        for entity in ros_data.entities:
             xmin, ymin, xmax, ymax = entity.roi
             cv2.rectangle(image, (xmin, ymin), (xmax, ymax), color, 2)
             cv2.putText(image, "%s" % (entity.label), (xmin + 2, ymin - 2),
