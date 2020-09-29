@@ -8,7 +8,7 @@ Date: 2020/09/26
   <include file="$(find light_tracker)/launch/core.launch">
       <arg name="detector_input_topic" value="/face_mask/input/compressed"/>
       <arg name="tracker_input_topic" value="/tracker/input/compressed"/>
-      <arg name="image_out_topic" value="/face_tracker/output/light_mask"/>
+      <arg name="image_out_topic" value="/face_tracker/output/compressed"/>
       <arg name="add_entity_topic" value="/tracker/input/add"/>
       <arg name="tracker_out_topic" value="/tracker/output/entities"/>
       <arg name="detector_out_topic" value="/face_mask/output/faces"/>
