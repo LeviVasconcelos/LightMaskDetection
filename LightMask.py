@@ -66,8 +66,13 @@ class LightMaskDetector:
             request_msg.img = self.key_frame_msg 
             request_msg.label = "Person " + str(self.counter)
             self.counter += 1
-            request_msg.roi = bbox.bbox
-            self.add_entry_pub.publish("request_msg")
+            xmin, ymin, xmax, ymax = bbox.bbox
+            x = xmin
+            y = ymin
+            w = xmax - xmin
+            h = ymax - ymin
+            request_msg.roi = (x, y, w, h)
+            self.add_entry_pub.publish(request_msg)
         self.shouldInitialize = False
         self.isInitialized = True
 
@@ -77,9 +82,10 @@ class LightMaskDetector:
         np_arr = np.fromstring(ros_data.img.data, np.uint8)
         image = cv2.imdecode(np_arr, cv2.IMREAD_COLOR) # OpenCV >= 3.0:
         for entity in ros_data.entities:
-            xmin, ymin, xmax, ymax = entity.roi
-            cv2.rectangle(image, (xmin, ymin), (xmax, ymax), color, 2)
-            cv2.putText(image, "%s" % (entity.label), (xmin + 2, ymin - 2),
+            #xmin, ymin, xmax, ymax = entity.roi
+            x, y, w, h = [int(x) for x in entity.roi]
+            cv2.rectangle(image, (x, y), (x + w, y + h), color, 2)
+            cv2.putText(image, "%s" % (entity.label), (x + 2, y - 2),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.8, color)
         out_msg = CompressedImage()
         out_msg.data = np.array(cv2.imencode('.jpg', image)[1]).tostring()
